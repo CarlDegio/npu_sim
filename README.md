@@ -86,7 +86,6 @@ ros2 topic pub /joint_camera_controller/commands std_msgs/msg/Float64MultiArray 
 
 ## 拓展
 
-gazebo11安装好后，`/opt/ros/foxy/share/gazebo_plugins/worlds`中有一些sdf案例，如各种车的仿真控制，传感器信息接收等，附带有可以尝试的指令，可以从这里了解到一些常用的组件的sdf代码。
+gazebo11安装好后，`/opt/ros/foxy/share/gazebo_plugins/worlds`中有一些sdf案例，如各种车的仿真控制，传感器信息接收等，附带有可以尝试的指令，可以从这里了解到一些常用的组件的sdf代码。使用前最好预先[下载](https://github.com/osrf/gazebo_models)model到~/.gazebo/models
 
-`ros-foxy-gazebo-ros2-control-demos`这个包包含了ros2 control在gazebo中的使用案例，是位置、速度、力控制的cartpole，可以试试向他们发送话题等，[仓库链接](https://github.com/ros-simulation/gazebo_ros2_control)。ros2的controller和ros1不太一样，还在摸索中。
-
+`ros-foxy-gazebo-ros2-control-demos`这个包包含了ros2 control在gazebo中的使用案例，是位置、速度、力控制的cartpole，可以试试向他们发送话题等，[仓库链接](https://github.com/ros-simulation/gazebo_ros2_control)。ros2的controller和ros1不太一样，还在摸索中。另一个教学型[案例](https://github.com/ros-controls/ros2_control_demos)以及官方[doc](https://ros-controls.github.io/control.ros.org/index.html)，内容还很少。
