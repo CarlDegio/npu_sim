@@ -27,8 +27,33 @@
       <uri>model://sun</uri>
     </include>
 
-    <model name="cylinder">
+    <model name="cylinder1">
       <pose>2 2 0.5 0.0 0.0 0.0</pose>
+      <link name="obs">
+
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.2</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.2</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+          <laser_retro>50.0</laser_retro>
+        </collision>
+
+      </link>
+    </model>
+
+    <model name="cylinder2">
+      <pose>1 0 0.5 0.0 0.0 0.0</pose>
       <link name="obs">
 
         <visual name="visual">

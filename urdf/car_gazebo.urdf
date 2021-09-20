@@ -62,9 +62,24 @@
         <axis xyz="0 1 0"/>
         <parent link="base_link"/>
         <child link="USB_camera_link" />
-        <limit effort="10.0" lower="-1.8" upper="1.8" velocity="10"/>
+        <limit effort="2.0" lower="-1.8" upper="1.8" velocity="0.5"/>
         <dynamics damping="1.0" friction="1.0"/>
     </joint>
+
+    <ros2_control name="GazeboSystem" type="system">
+        <hardware>
+          <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
+        <joint name="base_USBcamera_joint">
+          <command_interface name="position">
+            <param name="min">-2</param>
+            <param name="max">2</param>
+          </command_interface>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+          <state_interface name="effort"/>
+        </joint>
+    </ros2_control>
 
     <gazebo reference="base_link">
         <material>Gazebo/Purple</material>
@@ -144,6 +159,47 @@
         </sensor>
     </gazebo>
 
+    <gazebo reference="USB_camera_link">
+    <sensor name="camera_sensor" type="camera">
+      <update_rate>30.0</update_rate>
+      <always_on>1</always_on>
+      <camera name="camera">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.01</near>
+          <far>40</far>
+        </clip>
+        <distortion>
+          <k1>0.0</k1>
+          <k2>0.0</k2>
+          <k3>0.0</k3>
+          <p1>0.0</p1>
+          <p2>0.0</p2>
+          <center>0.5 0.5</center>
+        </distortion>
+      </camera>
+      <plugin filename="libgazebo_ros_camera.so" name="camera_controller">
+        <ros>
+          <namespace>/car</namespace>
+          <argument>camera/image_raw:=/camera/image</argument>
+          <argument>camera/camera_info:=/camera/image/camera_info</argument>
+        </ros>
+        <camera_name>camera_car_front</camera_name>
+        <frame_name>camera_link</frame_name>
+        <hack_baseline>0.07</hack_baseline>
+      </plugin>
+    </sensor>
+  </gazebo>
 
+    <gazebo>
+        <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control_camera">
+          <parameters>/home/demons/dev_ws/install/npu_sim/share/npu_sim/config/joint_controller.yaml</parameters>
+        </plugin>
+    </gazebo>
 
 </robot>

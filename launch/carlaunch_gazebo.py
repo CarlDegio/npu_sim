@@ -35,29 +35,41 @@ def generate_launch_description():
             arguments=['-d', rviz_config_dir],
             output='screen')
 
-    # node_robot_state_publisher = Node(
-    #     package='robot_state_publisher',
-    #     executable='robot_state_publisher',
-    #     output='screen',
-    #     arguments=[urdf])
+    node_robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        output='screen',
+        arguments=[urdf])
 
-    # load_joint_state_controller = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
-    #          'joint_state_broadcaster'],
-    #     output='screen'
-    # )
-    #
-    # load_joint_trajectory_controller = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
-    #          'joint_trajectory_controller'],
-    #     output='screen'
-    # )
+    load_joint_state_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
+             'joint_camera_broadcaster'],
+        output='screen'
+    )
+
+    load_forward_command_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
+             'joint_camera_controller'],
+        output='screen'
+    )
 
     return LaunchDescription([
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=spawn_entity,
+                on_exit=[load_joint_state_controller],
+            )
+        ),
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=load_joint_state_controller,
+                on_exit=[load_forward_command_controller],
+            )
+        ),
         gazebo,
         spawn_entity,
         rviz2,
-        # node_robot_state_publisher,
+        node_robot_state_publisher,
         # Node(
         #     package='turtlesim',
         #     namespace='turtlesim1',
