@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!--
+  Gazebo ROS differential drive plugin demo
+
+  Try sending commands:
+
+    ros2 topic pub /demo/cmd_demo geometry_msgs/Twist '{linear: {x: 1.0}}' -1
+
+    ros2 topic pub /demo/cmd_demo geometry_msgs/Twist '{angular: {z: 0.1}}' -1
+
+  Try listening to odometry:
+
+    ros2 topic echo /demo/odom_demo
+
+  Try listening to TF:
+
+    ros2 run tf2_ros tf2_echo odom_demo link
+-->
+<sdf version="1.6">
+  <world name="default">
+
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <model name="cylinder">
+      <pose>2 2 0.5 0.0 0.0 0.0</pose>
+      <link name="obs">
+
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.2</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.2</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+          <laser_retro>50.0</laser_retro>
+        </collision>
+
+      </link>
+    </model>
+  </world>
+</sdf>
