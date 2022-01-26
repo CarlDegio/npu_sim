@@ -1,20 +1,28 @@
 controller_manager:
   ros__parameters:
-    update_rate: 100  # Hz
+    update_rate: 1000  # Hz
 
-    joint_camera_controller:
-      type: position_controllers/JointGroupPositionController
+    arm_joint_controller:
+      type: velocity_controllers/JointGroupVelocityController
 
-    joint_camera_broadcaster:
+    joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-joint_camera_controller:
+    camera_joint_controller:
+      type: position_controllers/JointGroupPositionController
+
+arm_joint_controller:
   ros__parameters:
     joints:
-      - base_USBcamera_joint
-    interface_name: position
+      - base_arm1_joint
+      - arm1_arm2_joint
+      - arm2_arm3_joint
     command_interfaces:
-      - position
-    state_interfaces:
-      - position
       - velocity
+
+camera_joint_controller:
+  ros__parameters:
+    joints:
+      - base_camera_low_joint
+    command_interface:
+      - position

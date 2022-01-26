@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<robot>
+    <gazebo reference="base_link">
+        <material>Gazebo/White</material>
+    </gazebo>
+
+    <gazebo reference="left_front_wheel">
+        <material>Gazebo/SkyBlue</material>
+    </gazebo>
+
+    <gazebo reference="right_front_wheel">
+        <material>Gazebo/SkyBlue</material>
+    </gazebo>
+
+    <gazebo reference="right_back_wheel">
+        <material>Gazebo/SkyBlue</material>
+    </gazebo>
+
+    <gazebo reference="left_back_wheel">
+        <material>Gazebo/SkyBlue</material>
+    </gazebo>
+
+    <gazebo reference="arm1_link">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+    <gazebo reference="arm2_link">
+        <material>Gazebo/Yellow</material>
+    </gazebo>
+
+    <gazebo reference="arm3_link">
+        <material>Gazebo/SkyBlue</material>
+    </gazebo>
+
+    <gazebo reference="camera_low_link">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="camera_high_link">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="laser_link">
+        <material>Gazebo/Red</material>
+        <sensor name="sensor_ray" type="ray">
+            <ray>
+                <scan>
+                    <horizontal>
+                    <samples>500</samples>
+                    <resolution>1</resolution>
+                    <min_angle>-1.5</min_angle>
+                    <max_angle>1.5</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.1</min>
+                    <max>10</max>
+                    <resolution>1</resolution>
+                </range>
+                <noise>
+                <type>gaussian</type>
+              <!-- Noise parameters based on published spec for Hokuyo laser
+                    achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+                    stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+                    reading. -->
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
+            </ray>
+            <always_on>true</always_on>
+            <update_rate>10.0</update_rate>
+            <plugin name="laserscan" filename="libgazebo_ros_ray_sensor.so">
+                <ros>
+                    <namespace>/car</namespace>
+                    <remapping>~/out:=scan</remapping>
+                </ros>
+                <output_type>sensor_msgs/LaserScan</output_type>
+            </plugin>
+            <plugin name="range" filename="libgazebo_ros_ray_sensor.so">
+                <ros>
+                    <namespace>/car</namespace>
+                    <remapping>~/out:=range</remapping>
+                </ros>
+                <radiation_type>infrared</radiation_type>
+                <!--infrared laser-->
+                <output_type>sensor_msgs/Range</output_type>
+                <frame_name>laser_link</frame_name>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <gazebo reference="camera_low_link">
+        <sensor name="camera_low" type="camera">
+            <update_rate>30.0</update_rate>
+            <always_on>1</always_on>
+            <camera name="camera">
+                <horizontal_fov>1.3962634</horizontal_fov>
+                <image>
+                    <width>480</width>
+                    <height>360</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.01</near>
+                    <far>20</far>
+                </clip>
+                <distortion>
+                    <k1>0.0</k1>
+                    <k2>0.0</k2>
+                    <k3>0.0</k3>
+                    <p1>0.0</p1>
+                    <p2>0.0</p2>
+                    <center>0.5 0.5</center>
+                </distortion>
+            </camera>
+            <plugin filename="libgazebo_ros_camera.so" name="camera_controller">
+            <ros>
+                <namespace>/car</namespace>
+                <remapping>~/image_raw:=camera_low/image</remapping>
+                <remapping>~/camera_info:=camera_low/camera_info</remapping>
+            </ros>
+            <camera_name>camera_low</camera_name>
+<!--            set TF frame name-->
+            <frame_name>camera_low_link</frame_name>
+<!--            <hack_baseline>0.07</hack_baseline>-->
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <gazebo reference="camera_high_link">
+        <sensor name="camera_high" type="depth">
+            <update_rate>30.0</update_rate>
+            <always_on>1</always_on>
+            <camera name="depth_camera">
+                <horizontal_fov>1.7</horizontal_fov>
+                <image>
+                    <width>480</width>
+                    <height>360</height>
+                    <format>B8G8R8</format>
+                </image>
+                <clip>
+                    <near>0.01</near>
+                    <far>20</far>
+                </clip>
+                <distortion>
+                    <k1>0.0</k1>
+                    <k2>0.0</k2>
+                    <k3>0.0</k3>
+                    <p1>0.0</p1>
+                    <p2>0.0</p2>
+                    <center>0.5 0.5</center>
+                </distortion>
+            </camera>
+            <plugin filename="libgazebo_ros_camera.so" name="intel_realsense_d430_depth_driver">
+            <ros>
+                <namespace>/car</namespace>
+                <remapping>~/image_raw:=camera_high/image</remapping>
+                <remapping>~/camera_info:=camera_high/camera_info</remapping>
+                <remapping>~/depth/image_raw:=camera_high/depth_image</remapping>
+                <remapping>~/depth/camera_info:=camera_high/depth_camera_info</remapping>
+                <remapping>~/points:=camera_high/points</remapping>
+            </ros>
+            <camera_name>camera_high</camera_name>
+<!--            set TF frame name-->
+            <frame_name>camera_high_link</frame_name>
+<!--            <hack_baseline>0.07</hack_baseline>-->
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <gazebo reference="imu_link">
+        <sensor name="car_imu" type="imu">
+            <always_on>true</always_on>
+            <update_rate>10</update_rate>
+            <imu>
+                <angular_velocity>
+                    <z>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>2e-4</stddev>
+                        </noise>
+                    </z>
+                </angular_velocity>
+
+                <linear_acceleration>
+                    <x>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>1.7e-2</stddev>
+                        </noise>
+                    </x>
+                    <y>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>1.7e-2</stddev>
+                        </noise>
+                    </y>
+                </linear_acceleration>
+            </imu>
+            <plugin name="bytes_imu" filename="libgazebo_ros_imu_sensor.so">
+                <ros>
+                    <namespace>car</namespace>
+                    <remapping>~/out:=imu</remapping>
+                </ros>
+                <initial_orientation_as_reference>false</initial_orientation_as_reference>
+                <frame_name>imu_link</frame_name>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <gazebo>
+        <plugin name='planar_move' filename='libgazebo_ros_planar_move.so'>
+            <ros>
+              <namespace>/car</namespace>
+            </ros>
+<!--            bug: couldn't reach this speed-->
+            <update_rate>100</update_rate>
+            <publish_rate>10</publish_rate>
+            <!-- output -->
+            <publish_odom>true</publish_odom>
+            <publish_odom_tf>true</publish_odom_tf>
+            <odometry_frame>odom_link</odometry_frame>
+            <robot_base_frame>footprint</robot_base_frame>
+            <covariance_x>0.0001</covariance_x>
+            <covariance_y>0.0001</covariance_y>
+            <covariance_yaw>0.01</covariance_yaw>
+        </plugin>
+    </gazebo>
+
+    <ros2_control name="GazeboSystem" type="system">
+        <hardware>
+              <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
+        <joint name="base_arm1_joint">
+          <command_interface name="velocity">
+            <param name="min">-1</param>
+            <param name="max">1</param>
+          </command_interface>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+          <state_interface name="effort"/>
+        </joint>
+        <joint name="arm1_arm2_joint">
+          <command_interface name="velocity">
+            <param name="min">-1</param>
+            <param name="max">1</param>
+          </command_interface>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+          <state_interface name="effort"/>
+        </joint>
+        <joint name="arm2_arm3_joint">
+          <command_interface name="velocity">
+            <param name="min">-1</param>
+            <param name="max">1</param>
+          </command_interface>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+        </joint>
+        <joint name="base_camera_low_joint">
+          <command_interface name="position">
+            <param name="min">-1</param>
+            <param name="max">1</param>
+          </command_interface>
+          <state_interface name="position"/>
+        </joint>
+    </ros2_control>
+
+
+    <gazebo>
+        <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+            <robot_sim_type>gazebo_ros2_control/GazeboSystem</robot_sim_type>
+            <parameters>$(find npu_sim)/config/joint_controller.yaml</parameters>
+        </plugin>
+    </gazebo>
+
+</robot>
